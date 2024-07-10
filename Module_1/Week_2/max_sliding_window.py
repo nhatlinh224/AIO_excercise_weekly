@@ -1,44 +1,51 @@
+# Solution 1
 def max_sliding_window(num_list, k):
-    n = len(num_list)
-    if n * k == 0:
-        return []
+    """
+    This function calculates the maximum value in each sliding window of size `k` in the input list `num_list`.
 
-    if k == 1:
-        return num_list
+    Parameters:
+    num_list (list): A list of integers.
+    k (int): The size of the sliding window.
 
-    def clean_deque(i):
-        # Remove indexes of elements not from sliding window
-        if deq and deq[0] == i - k:
-            deq.pop(0)
+    Returns:
+    list: A list of integers representing the maximum value in each sliding window.
+    """
+    result = []
+    sliding_window = []
 
-        # Remove from deq indexes of all elements
-        # which are smaller than current element num_list[i]
-        while deq and num_list[i] > num_list[deq[len(deq) - 1]]:
-            deq.pop()
+    for element in num_list:
+        sliding_window.append(element)
 
-    # Init deque and output
-    deq = []
-    max_idx = 0
-    for i in range(k):
-        clean_deque(i)
-        deq.append(i)
-        # Compute max in num_list[:k]
-        if num_list[i] > num_list[max_idx]:
-            max_idx = i
-    output = [num_list[max_idx]]
+        if len(sliding_window) == k:
+            result.append(max(sliding_window))
+            del sliding_window[0]
 
-    # Build output
-    for i in range(k, n):
-        clean_deque(i)
-        deq.append(i)
-        output.append(num_list[deq[0]])
-    return output
+    return result
 
 
-# Đầu vào
+# TestCase
 num_list = [3, 4, 5, 1, -44, 5, 10, 12, 33, 1]
 k = 3
+print(max_sliding_window(num_list, k))
 
-# Gọi hàm và in kết quả
-output = max_sliding_window(num_list, k)
-print(output)
+
+# Slicing Solution 2
+def max_sliding_window2(num_list, k):
+    if k < 1:
+        raise ValueError("k phải lớn hơn hoặc bằng 1")
+
+    start_indexes = list(range(0, len(num_list) - k + 1))
+    end_indexes = list(range(k, len(num_list) + 1))
+    result = []
+
+    for start_index, end_index in zip(start_indexes, end_indexes):
+        sub_list = num_list[start_index:end_index]
+        result.append(max(sub_list))
+
+    return result
+
+
+# Test Case
+num_list = [3, 4, 5, 1, -44, 5, 10, 12, 33, 1]
+k = 3
+print(max_sliding_window2(num_list, k))
