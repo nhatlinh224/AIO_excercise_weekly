@@ -1,0 +1,39 @@
+# Tính Softmax
+import torch
+import torch.nn as nn
+
+
+class MySoftmax(nn.Module):
+    def __init__(self):
+        super(MySoftmax, self).__init__()
+
+    def forward(self, x):
+        x_exp = torch.exp(x)
+        total = torch.sum(x_exp, dim=0, keepdim=True)
+        return x_exp / total
+
+
+data = torch.Tensor([1, 2, 3])
+my_softmax = MySoftmax()
+output = my_softmax(data)
+print(output)
+
+
+# SoftMax Stable
+class StableSoftmax(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x):
+        c = torch.max(x, dim=0).values  # Lấy giá trị lớn nhất dọc theo chiều 0
+        x_exp = torch.exp(x - c)        # Tính hàm mũ của (x - c)
+        # Tính tổng của x_exp dọc theo chiều 0
+        total = x_exp.sum(dim=0, keepdim=True)
+        return x_exp / total  # Trả về kết quả softmax
+
+
+# Khởi tạo lớp StableSoftmax và tính toán softmax
+data = torch.Tensor([1, 2, 3])
+stable_softmax = StableSoftmax()
+output = stable_softmax(data)
+print(output)
